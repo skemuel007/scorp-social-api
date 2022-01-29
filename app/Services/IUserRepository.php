@@ -1,11 +1,14 @@
 <?php
 
-namespace App\Repository;
+namespace App\Services;
 
 interface IUserRepository
 {
-    public function getAllUsers();
+    public function getAllUsers(array $requestDetails);
     public function getUserById($id);
-    public function createOrUpdate($id = null, $collection = []);
+    public function createUser(array $userDetails);
+    public function getUserByUsername($username);
+    public function getUserByEmail($email);
+    public function updateUser($id, array $userDetails);
     public function deleteUser($id);
 }

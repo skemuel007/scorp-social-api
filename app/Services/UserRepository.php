@@ -1,17 +1,27 @@
 <?php
-namespace App\Repository;
+
+namespace App\Services;
 
 use App\Models\User;
-use App\Repository\IUserRepository;
+use App\Services\IUserRepository;
 use Illuminate\Support\Facades\Hash;
 
-class UserRepository implements IUserRepository {
+class UserRepository implements IUserRepository
+{
 
     protected $user = null;
 
-    public function getAllUsers()
+    public function getAllUsers(array $requestDetails)
     {
-        return User::all();
+        $limit = $requestDetails["limit"] ? $requestDetails["limit"] : 15;
+        $page = $requestDetails["page"] ? $requestDetails["page"] : 1;
+
+        return User::paginate(
+            $perPage = $limit,
+            $columns = ['*'],
+            $pageName = 'users',
+            $currentPage = $page
+        );
     }
 
     public function getUserById($id)
@@ -19,19 +29,25 @@ class UserRepository implements IUserRepository {
         return User::find($id);
     }
 
-    public function createOrUpdate($id = null, $collection = [])
+    public function createUser(array $user)
     {
-        if (is_null($id)) {
-            $user = new User;
-            $user->name = $collection['name'];
-            $user->email = $collection['email'];
-            $user->password = Hash::make('password');
-            return $user->save();
-        }
-        $user = User::find($id);
-        $user->name = $collection['name'];
-        $user->email = $collection['email'];
-        return $user->save();
+
+        return User::create($user);
+    }
+
+    public function getUserByEmail($email)
+    {
+        return User::where('email', $email)->first();
+    }
+
+    public function getUserByUsername($username)
+    {
+        return User::where('username', $username)->first();
+    }
+
+    public function updateUser($id, array $userDetails)
+    {
+        return User::where($id)->update($userDetails);
     }
 
     public function deleteUser($id)

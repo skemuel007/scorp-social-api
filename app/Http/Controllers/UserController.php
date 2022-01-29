@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Repository\IUserRepository;
+use App\Services\IUserRepository;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Validator;
 
 class UserController extends Controller
 {
@@ -19,22 +21,18 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = $this->userRepository->getAllUsers();
+        //$limit = $request->limit ? $request->limit : 20;
+        // $page = $request->page && $request->page > 0 ? $request->page : 1;
+        // $skip = ($page - 1) * $limit;
+
+        $requestDetails = $request->all();
+
+        $users = $this->userRepository->getAllUsers($requestDetails);
         return response()->json([
             'result' => $users
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -45,7 +43,25 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'username' => 'required',
+            'email' => 'required:email',
+            'full_name' => 'required',
+            'bio' => 'required'
+        ]);
+
+        // check for validation errors
+        if ($validator->fails()) {
+            return response()->json([
+                count($validator->errors()) > 1 ? 'errors' : 'error' => $validator->errors(),
+            ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $saved = $this->userRepository->createUser($request->all());
+
+        return response()->json([
+            'result' => $saved
+        ]);
     }
 
     /**
@@ -56,7 +72,9 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        return response()->json([
+            'result' => $this->userRepository->getUserById($id)
+        ]);
     }
 
     /**
