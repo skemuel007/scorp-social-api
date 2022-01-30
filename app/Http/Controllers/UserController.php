@@ -32,7 +32,7 @@ class UserController extends Controller
         $users = $this->userRepository->getAllUsers($requestDetails);
         return response()->json([
             'result' => $users
-        ]);
+        ], JsonResponse::HTTP_OK);
     }
 
     /**
@@ -60,7 +60,7 @@ class UserController extends Controller
 
         return response()->json([
             'result' => $saved
-        ]);
+        ], JsonResponse::HTTP_CREATED);
     }
 
     /**
@@ -73,7 +73,7 @@ class UserController extends Controller
     {
         return response()->json([
             'result' => $this->userRepository->getUserById($id)
-        ]);
+        ], JsonResponse::HTTP_OK);
     }
 
     /**

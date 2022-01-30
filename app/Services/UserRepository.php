@@ -13,20 +13,27 @@ class UserRepository implements IUserRepository
 
     public function getAllUsers(array $requestDetails)
     {
-        $limit = $requestDetails["limit"] ? $requestDetails["limit"] : 15;
-        $page = $requestDetails["page"] ? $requestDetails["page"] : 1;
+        $limit = 15;
+        $page = 1;
+        if (array_key_exists("limit", $requestDetails)) {
+            $limit = $requestDetails["limit"];
+        }
+
+        if (array_key_exists("page", $requestDetails)) {
+            $page = $requestDetails["page"];
+        }
 
         return User::paginate(
             $perPage = $limit,
             $columns = ['*'],
-            $pageName = 'users',
+            $pageName = 'page',
             $currentPage = $page
         );
     }
 
     public function getUserById($id)
     {
-        return User::find($id);
+        return User::where('uuid', $id)->first();
     }
 
     public function createUser(array $user)
@@ -47,11 +54,11 @@ class UserRepository implements IUserRepository
 
     public function updateUser($id, array $userDetails)
     {
-        return User::where($id)->update($userDetails);
+        return User::where('uuid', $id)->update($userDetails);
     }
 
     public function deleteUser($id)
     {
-        return User::find($id)->delete();
+        return User::where('uuid', $id)->delete();
     }
 }

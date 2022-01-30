@@ -9,7 +9,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-
 // link to creating uuid - https://www.youtube.com/watch?v=1XIMI5kOPuc
 class User extends Authenticatable
 {
@@ -40,4 +39,9 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [];
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'user_id');
+    }
 }

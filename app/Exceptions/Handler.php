@@ -112,9 +112,7 @@ class Handler extends ExceptionHandler
                 $count = count($exMsg);
                 return response()->json(
                     [
-                        'status' => false,
-                        'message' =>  'The dataset request for the model ' . $exMsg[$count - 1] . ' is not found',
-                        'data' => null
+                        'error' =>  'The dataset request for the model ' . $exMsg[$count - 1] . ' is not found',
                     ],
                     404
                 );
@@ -122,44 +120,38 @@ class Handler extends ExceptionHandler
 
             if ($exception instanceof MethodNotAllowedHttpException) {
                 return response()->json([
-                    'status' => false,
-                    'message' => 'Http method not valid for this url',
-                    'data' => null
+                    'error' => 'Http method not valid for this url',
                 ], Response::HTTP_METHOD_NOT_ALLOWED);
             }
 
             if ($exception instanceof BindingResolutionException) {
                 return response()->json([
-                    'status' => false,
-                    'message' => $exception->getMessage(),
-                    'data' => null
+                    'error' => $exception->getMessage(),
                 ], 500);
             }
 
             if ($exception instanceof UnauthorizedHttpException) {
 
                 return response()->json([
-                    'status' => false,
-                    'message' => $exception->getMessage(),
-                    'data' => null
+                    'error' => $exception->getMessage(),
                 ], 401);
             }
 
-            if ($exception instanceof TokenInvalidException) {
+            /*if ($exception instanceof TokenInvalidException) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Token supplied is invalid, please login with appropriate credentials',
                     'data' => null
                 ], 400);
-            }
+            }*/
 
-            if ($exception instanceof TokenExpiredException) {
+            /*if ($exception instanceof TokenExpiredException) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Token, Login again to get fresh token',
                     'data' => null
                 ], 500);
-            }
+            }*/
 
             // JWT Auth related errors
             /*if ($exception instanceof  JWTEx) {
