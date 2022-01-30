@@ -44,16 +44,15 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'username' => 'required',
-            'email' => 'required:email',
-            'full_name' => 'required',
-            'bio' => 'required'
+            'username' => 'required|unique:users|max:255',
+            'email' => 'required|email|unique:users|max:255',
+            'full_name' => 'required|max:255',
         ]);
 
         // check for validation errors
         if ($validator->fails()) {
             return response()->json([
-                count($validator->errors()) > 1 ? 'errors' : 'error' => $validator->errors(),
+                'error' => $validator->errors(),
             ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
         }
 
